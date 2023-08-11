@@ -1,5 +1,7 @@
+# Импорт необходимых модулей
 import pygame
 
+# Создание объекта для отслеживания времени
 clock = pygame.time.Clock()
 
 # Инициализация Pygame
@@ -43,6 +45,7 @@ ghost_list_in_game = []
 player_anim_count = 0
 bg_x = 0
 
+# Подсчет счета
 score = 0
 
 # Настройки игрока
@@ -79,6 +82,17 @@ gameplay = True
 # Цикл игры
 running = True
 while running:
+    # Обработка событий
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+            pygame.quit()
+        if event.type == ghost_timer:
+            ghost_list_in_game.append(ghost.get_rect(topleft=(642, 250)))
+        if gameplay and event.type == pygame.KEYUP and event.key == pygame.K_w and bullets_left > 0:
+            bullets.append(bullet.get_rect(topleft=(player_x + 30, player_y + 10)))
+            bullets_left -= 1
+
     # Отрисовка фона
     screen.blit(bg, (bg_x, 0))
     screen.blit(bg, (bg_x + 640, 0))
@@ -87,7 +101,7 @@ while running:
         # Получение прямоугольника игрока для проверки столкновений
         player_rect = walk_left[0].get_rect(topleft=(player_x, player_y))
 
-# Отрисовка привидений и их перемещение
+        # Отрисовка привидений и их перемещение
         draw_ghosts()
         for (i, el) in enumerate(ghost_list_in_game):
             el.x -= 10
@@ -117,6 +131,7 @@ while running:
         else:
             screen.blit(walk_right[player_anim_count], (player_x, player_y))
 
+        # Отображение счета на экране
         score_text = label.render("Ваш счет: " + str(score), False, (255, 255, 255))
         screen.blit(score_text, (10, 1))
 
@@ -139,18 +154,18 @@ while running:
         elif keys[pygame.K_RIGHT] and player_x < 600:
             player_x += player_speed
 
-# Анимация игрока
+        # Анимация игрока
         if player_anim_count == 3:
             player_anim_count = 0
         else:
             player_anim_count += 1
 
-# Перемещение фона
+        # Перемещение фона
         bg_x -= 2
         if bg_x == -640:
             bg_x = 0
 
-# Обработка пуль
+        # Обработка пуль
         if bullets:
             for (i, el) in enumerate(bullets):
                 screen.blit(bullet, (el.x, el.y))
@@ -165,10 +180,12 @@ while running:
                             ghost_list_in_game.pop(index)
                             bullets.pop(i)
     else:
+        # Отображение экрана проигрыша
         screen.fill((87, 88, 89))
         screen.blit(lose_label, (180, 100))
         screen.blit(restart_label, restart_label_rect)
 
+        # Обработка нажатия кнопки "Играть снова"
         mouse = pygame.mouse.get_pos()
         if restart_label_rect.collidepoint(mouse) and pygame.mouse.get_pressed()[0]:
             gameplay = True
@@ -177,16 +194,8 @@ while running:
             bullets.clear()
             bullets_left = 5
 
+    # Обновление экрана
     pygame.display.update()
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-            pygame.quit()
-        if event.type == ghost_timer:
-            ghost_list_in_game.append(ghost.get_rect(topleft=(642, 250)))
-        if gameplay and event.type == pygame.KEYUP and event.key == pygame.K_w and bullets_left > 0:
-            bullets.append(bullet.get_rect(topleft=(player_x + 30, player_y + 10)))
-            bullets_left -= 1
-
-    clock.tick(12)
+    # Ограничение частоты обновления экрана
+    clock.tick(18)
