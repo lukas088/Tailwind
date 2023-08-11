@@ -43,6 +43,8 @@ ghost_list_in_game = []
 player_anim_count = 0
 bg_x = 0
 
+score = 0
+
 # Настройки игрока
 player_speed = 5
 player_x = 150
@@ -95,13 +97,28 @@ while running:
 
             if player_rect.colliderect(el):
                 gameplay = False
+        for (i, el) in enumerate(bullets):
+            screen.blit(bullet, (el.x, el.y))
+            el.x += 4
 
-# Обработка клавиш управления игроком
+            if el.x > 660:
+                bullets.pop(i)
+
+            for (index, ghost_rect) in enumerate(ghost_list_in_game):
+                if el.colliderect(ghost_rect):
+                    ghost_list_in_game.pop(index)
+                    bullets.pop(i)
+                    score += 10  # Увеличиваем счёт за убийство привидения
+
+        # Обработка клавиш управления игроком
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             screen.blit(walk_left[player_anim_count], (player_x, player_y))
         else:
             screen.blit(walk_right[player_anim_count], (player_x, player_y))
+
+        score_text = label.render("Ваш счет: " + str(score), False, (255, 255, 255))
+        screen.blit(score_text, (10, 1))
 
         if not is_jump:
             if keys[pygame.K_SPACE]:
