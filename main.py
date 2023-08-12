@@ -57,10 +57,6 @@ player_y = 250
 is_jump = False
 jump_count = 7
 
-# Звуковые настройки
-bg_sound = pygame.mixer.Sound("sounds/bg.mp3")
-# bg_sound.play()
-
 # Таймер для появления привидений
 ghost_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(ghost_timer, 2500)
@@ -86,7 +82,6 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-            pygame.quit()
         if event.type == ghost_timer:
             ghost_list_in_game.append(ghost.get_rect(topleft=(642, 250)))
         if gameplay and event.type == pygame.KEYUP and event.key == pygame.K_w and bullets_left > 0:
@@ -204,3 +199,6 @@ while running:
 
     # Ограничение частоты обновления экрана
     clock.tick(18)
+
+# Выход из Pygame после завершения цикла
+pygame.quit()
