@@ -45,7 +45,7 @@ ghost_list_in_game = []
 player_anim_count = 0
 bg_x = 0
 
-# Подсчет счета
+# Подсчёт счёта
 score = 0
 
 # Настройки игрока
@@ -111,6 +111,11 @@ while running:
 
             if player_rect.colliderect(el):
                 gameplay = False
+
+            if player_rect.colliderect(el):
+                gameplay = False
+                score = 0
+
         for (i, el) in enumerate(bullets):
             screen.blit(bullet, (el.x, el.y))
             el.x += 4
