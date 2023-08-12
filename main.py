@@ -1,4 +1,3 @@
-# Импорт необходимых модулей
 import pygame
 
 # Создание объекта для отслеживания времени
@@ -105,11 +104,11 @@ while running:
                 ghost_list_in_game.pop(i)
 
             if player_rect.colliderect(el):
-                gameplay = False
-
-            if player_rect.colliderect(el):
-                gameplay = False
-                score = 0
+                if not is_jump:
+                    gameplay = False
+                else:
+                    ghost_list_in_game.pop(i)
+                    score += 5  # Увеличиваем счет за перепрыгнутое привидение
 
         for (i, el) in enumerate(bullets):
             screen.blit(bullet, (el.x, el.y))
@@ -122,7 +121,7 @@ while running:
                 if el.colliderect(ghost_rect):
                     ghost_list_in_game.pop(index)
                     bullets.pop(i)
-                    score += 10  # Увеличиваем счёт за убийство привидения
+                    score += 10  # Увеличиваем счет за убийство привидения
 
         # Обработка клавиш управления игроком
         keys = pygame.key.get_pressed()
@@ -148,6 +147,7 @@ while running:
             else:
                 is_jump = False
                 jump_count = 7
+                score += 5  # Увеличиваем счет за успешный прыжок
 
         if keys[pygame.K_LEFT] and player_x > 0:
             player_x -= player_speed
